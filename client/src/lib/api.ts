@@ -76,33 +76,33 @@ export const contactAPI = {
 export const adminAPI = {
   getStats: () => api.get('/admin/stats'),
 
-  // Projects
+  // Projects — JSON avec URL image Uploadthing
   getProjects: () => api.get('/admin/projects'),
-  createProject: (data: FormData) =>
-    api.post('/admin/projects', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  updateProject: (id: number, data: FormData) =>
-    api.put(`/admin/projects/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  createProject: (data: Record<string, string>) =>
+    api.post('/admin/projects', data),
+  updateProject: (id: number, data: Record<string, string>) =>
+    api.put(`/admin/projects/${id}`, data),
   deleteProject: (id: number) => api.delete(`/admin/projects/${id}`),
 
   // Services
   getServices: () => api.get('/admin/services'),
-  updateService: (id: number, data: FormData) =>
-    api.put(`/admin/services/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  updateService: (id: number, data: Record<string, string>) =>
+    api.put(`/admin/services/${id}`, data),
 
   // Team
   getTeam: () => api.get('/admin/team'),
-  createTeamMember: (data: FormData) =>
-    api.post('/admin/team', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  updateTeamMember: (id: number, data: FormData) =>
-    api.put(`/admin/team/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  createTeamMember: (data: Record<string, string>) =>
+    api.post('/admin/team', data),
+  updateTeamMember: (id: number, data: Record<string, string>) =>
+    api.put(`/admin/team/${id}`, data),
   deleteTeamMember: (id: number) => api.delete(`/admin/team/${id}`),
 
   // Blog
   getBlogPosts: () => api.get('/admin/blog'),
-  createBlogPost: (data: FormData) =>
-    api.post('/admin/blog', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  updateBlogPost: (id: number, data: FormData) =>
-    api.put(`/admin/blog/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  createBlogPost: (data: Record<string, string>) =>
+    api.post('/admin/blog', data),
+  updateBlogPost: (id: number, data: Record<string, string>) =>
+    api.put(`/admin/blog/${id}`, data),
   deleteBlogPost: (id: number) => api.delete(`/admin/blog/${id}`),
 
   // Messages
