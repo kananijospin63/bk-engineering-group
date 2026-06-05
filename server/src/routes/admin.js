@@ -7,7 +7,7 @@ const {
   uploadTeam,
   uploadBlog,
   deleteImage,
-} = require('../config/cloudinary');
+} = require('../config/storage');
 
 const router = express.Router();
 
