@@ -30,9 +30,19 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('combined'));
 }
 
-// CORS
+// CORS — accepte localhost en dev et le domaine Vercel en prod
+const allowedOrigins = [
+  process.env.CLIENT_URL || 'http://localhost:3000',
+  'http://localhost:3000',
+];
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 

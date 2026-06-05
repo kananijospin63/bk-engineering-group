@@ -5,8 +5,15 @@ const nextConfig = {
   poweredByHeader: false,
 
   images: {
-    // Accepte TOUS les hostnames — solution définitive pour le dev local
     remotePatterns: [
+      // Cloudinary (production)
+      { protocol: 'https', hostname: 'res.cloudinary.com', pathname: '/**' },
+      // Render backend (production)
+      { protocol: 'https', hostname: '*.onrender.com', pathname: '/uploads/**' },
+      // Localhost (développement)
+      { protocol: 'http', hostname: 'localhost', port: '5000', pathname: '/uploads/**' },
+      { protocol: 'http', hostname: 'localhost', pathname: '/api-uploads/**' },
+      // Tout hostname (fallback dev)
       { protocol: 'http',  hostname: '**' },
       { protocol: 'https', hostname: '**' },
     ],
@@ -14,19 +21,20 @@ const nextConfig = {
     minimumCacheTTL: 86400,
     deviceSizes: [640, 828, 1080, 1920],
     imageSizes: [64, 128, 256],
-    dangerouslyAllowSVG: false,
   },
 
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion', 'date-fns'],
   },
 
-  // Proxy : /api-uploads/* → http://localhost:5000/uploads/*
+  // Proxy uploads en développement local
   async rewrites() {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const serverBase = apiUrl.replace('/api', '');
     return [
       {
         source: '/api-uploads/:path*',
-        destination: 'http://localhost:5000/uploads/:path*',
+        destination: `${serverBase}/uploads/:path*`,
       },
     ];
   },
