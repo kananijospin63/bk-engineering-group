@@ -21,9 +21,7 @@ function QuickProjectModal({ onClose, onSaved }: { onClose: () => void; onSaved:
     e.preventDefault();
     setSaving(true);
     try {
-      const fd = new FormData();
-      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
-      await adminAPI.createProject(fd);
+      await adminAPI.createProject(form);
       toast.success('Projet créé !');
       onSaved();
       onClose();
@@ -79,9 +77,7 @@ function QuickBlogModal({ onClose, onSaved }: { onClose: () => void; onSaved: ()
     e.preventDefault();
     setSaving(true);
     try {
-      const fd = new FormData();
-      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
-      await adminAPI.createBlogPost(fd);
+      await adminAPI.createBlogPost(form);
       toast.success('Article créé !');
       onSaved();
       onClose();
@@ -137,9 +133,7 @@ function QuickTeamModal({ onClose, onSaved }: { onClose: () => void; onSaved: ()
     e.preventDefault();
     setSaving(true);
     try {
-      const fd = new FormData();
-      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
-      await adminAPI.createTeamMember(fd);
+      await adminAPI.createTeamMember(form);
       toast.success('Membre ajouté !');
       onSaved();
       onClose();
