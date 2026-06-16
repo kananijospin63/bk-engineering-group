@@ -11,7 +11,7 @@ interface Props {
 }
 
 const fallbackPhotos = [
-  '/images/engineer-field.jpg.jpeg',
+  '/images/engineer-field.jpg',
   '/images/img16.jpeg',
   '/images/img17.jpeg',
   '/images/img18.jpeg',
