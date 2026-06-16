@@ -20,7 +20,7 @@ export default function IntroSection() {
               <div className="rounded-2xl overflow-hidden shadow-2xl relative h-96">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/images/engineer-field.jpg"
+                  src="/images/equipes/equipe-akeem.jpeg"
                   alt="Ingénieur BK Engineering Group sur le terrain"
                   className="w-full h-full object-cover object-top"
                 />
