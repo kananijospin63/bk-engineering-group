@@ -82,26 +82,14 @@ export default function Navbar() {
 
         {/* CTA desktop */}
         <div className="hidden lg:flex items-center gap-3">
-          {/* Bouton Admin — Dashboard si connecté, Login sinon */}
-          {loggedIn ? (
-            <Link
-              href="/admin"
-              prefetch={true}
-              className="flex items-center gap-2 px-4 py-2 bg-gold-500 hover:bg-gold-400 text-white text-sm font-semibold rounded-lg transition-colors duration-150"
-            >
-              <LogIn className="w-4 h-4" />
-              Dashboard
-            </Link>
-          ) : (
-            <Link
-              href="/admin/login"
-              prefetch={true}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-semibold rounded-lg transition-colors duration-150"
-            >
-              <LogIn className="w-4 h-4" />
-              Connexion Admin
-            </Link>
-          )}
+          <Link
+            href={loggedIn ? '/admin' : '/admin/login'}
+            prefetch={true}
+            className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-gold-500 border border-white/30 hover:border-gold-500 text-white text-sm font-semibold rounded-lg transition-all duration-200"
+          >
+            <LogIn className="w-4 h-4" />
+            {loggedIn ? 'Dashboard' : 'Admin'}
+          </Link>
           <Link href="/contact" prefetch={true} className="btn-primary text-sm py-2 px-5">
             Nous Contacter
           </Link>
@@ -143,25 +131,14 @@ export default function Navbar() {
           <div className="border-t border-white/10 my-2" />
 
           {/* Bouton Admin mobile */}
-          {loggedIn ? (
-            <Link
-              href="/admin"
-              prefetch={true}
-              className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-semibold text-gold-400 bg-white/10"
-            >
-              <LogIn className="w-4 h-4" />
-              Dashboard Admin
-            </Link>
-          ) : (
-            <Link
-              href="/admin/login"
-              prefetch={true}
-              className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-semibold text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              <LogIn className="w-4 h-4" />
-              Connexion Admin
-            </Link>
-          )}
+          <Link
+            href={loggedIn ? '/admin' : '/admin/login'}
+            prefetch={true}
+            className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-semibold text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <LogIn className="w-4 h-4" />
+            {loggedIn ? 'Dashboard Admin' : 'Connexion Admin'}
+          </Link>
 
           <Link href="/contact" prefetch={true} className="btn-primary mt-1 justify-center text-sm">
             Nous Contacter
