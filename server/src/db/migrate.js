@@ -2,14 +2,19 @@ require('dotenv').config({ path: require('path').join(__dirname, '../../.env') }
 const { Client } = require('pg');
 
 async function migrate() {
-  // Se connecte directement à la base existante
-  const client = new Client({
-    host:     process.env.DB_HOST     || 'localhost',
-    port:     parseInt(process.env.DB_PORT || '5432'),
-    user:     process.env.DB_USER     || 'postgres',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME     || 'bkgroupe',
-  });
+  // Utilise DATABASE_URL si disponible (Render), sinon les variables séparées
+  const client = process.env.DATABASE_URL
+    ? new Client({
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false },
+      })
+    : new Client({
+        host:     process.env.DB_HOST     || 'localhost',
+        port:     parseInt(process.env.DB_PORT || '5432'),
+        user:     process.env.DB_USER     || 'postgres',
+        password: process.env.DB_PASSWORD || '',
+        database: process.env.DB_NAME     || 'bkgroupe',
+      });
 
   try {
     await client.connect();
