@@ -4,19 +4,19 @@ const pool = require('./connection');
 
 async function seed() {
   try {
-    // Admin user — ON CONFLICT DO NOTHING replaces INSERT IGNORE
+    // ─── Admin ────────────────────────────────────────────────────────────────
     const hashedPassword = await bcrypt.hash('Admin@2024', 12);
     await pool.query(
       `INSERT INTO users (name, email, password, role)
        VALUES ($1, $2, $3, 'admin')
        ON CONFLICT (email) DO NOTHING`,
-      ['Admin BK', 'admin@bkengineering.com', hashedPassword]
+      ['Ir. Akeem Kanani Blaise', 'admin@bkengineering.com', hashedPassword]
     );
 
-    // Services
+    // ─── Services ─────────────────────────────────────────────────────────────
     const services = [
       {
-        title: "Conception Architecturale & Aménagement",
+        title: 'Conception Architecturale & Aménagement',
         description: "Nous offrons des services complets de conception architecturale, incluant la planification intérieure et extérieure, la modélisation 3D, et le suivi de chantier. Notre équipe crée des espaces fonctionnels et esthétiques adaptés aux besoins de chaque client.",
         short_description: "Conception architecturale complète, planification intérieure/extérieure et modélisation 3D.",
         icon: 'building',
@@ -24,21 +24,21 @@ async function seed() {
       },
       {
         title: "Systèmes d'Irrigation & Drainage",
-        description: "Conception et installation de systèmes d'irrigation et de drainage efficaces pour l'agriculture, les zones urbaines et les infrastructures. Nous utilisons des technologies modernes pour optimiser la gestion de l'eau et prévenir les inondations.",
+        description: "Conception et installation de systèmes d'irrigation et de drainage efficaces pour l'agriculture, les zones urbaines et les infrastructures. Nous utilisons des technologies modernes pour optimiser la gestion de l'eau.",
         short_description: "Systèmes d'irrigation et drainage pour agriculture et infrastructures urbaines.",
         icon: 'droplets',
         order_index: 2,
       },
       {
-        title: "Topographie de Haute Précision",
+        title: 'Topographie de Haute Précision',
         description: "Services de topographie utilisant des équipements de pointe (GPS différentiel, stations totales, drones) pour des relevés précis. Idéal pour les projets de construction, l'aménagement du territoire et les études géotechniques.",
         short_description: "Relevés topographiques précis avec GPS différentiel, stations totales et drones.",
         icon: 'map',
         order_index: 3,
       },
       {
-        title: "Réhabilitation & Rénovation de Bâtiments",
-        description: "Expertise en réhabilitation structurelle et rénovation de bâtiments existants. Nous évaluons l'état des structures, proposons des solutions de renforcement et supervisons les travaux pour redonner vie à vos infrastructures.",
+        title: 'Réhabilitation & Rénovation de Bâtiments',
+        description: "Expertise en réhabilitation structurelle et rénovation de bâtiments existants. Nous évaluons l'état des structures, proposons des solutions de renforcement et supervisons les travaux.",
         short_description: "Réhabilitation structurelle et rénovation complète de bâtiments existants.",
         icon: 'wrench',
         order_index: 4,
@@ -54,76 +54,173 @@ async function seed() {
       );
     }
 
-    // Team members
+    // ─── Équipe ───────────────────────────────────────────────────────────────
+    // Supprime les anciens membres pour repartir propre
+    await pool.query(`DELETE FROM team_members`);
+
     const team = [
-      { name: 'Ing. Bahati Kasereka', role: 'Directeur Général & Ingénieur Civil',  bio: "Fondateur de BK Engineering Group avec plus de 15 ans d'expérience en génie civil et gestion de projets d'infrastructure en RDC.", order_index: 1 },
-      { name: 'Arch. Marie Zawadi',   role: 'Architecte en Chef',                   bio: "Architecte diplômée spécialisée en conception durable et architecture tropicale adaptée au contexte congolais.", order_index: 2 },
-      { name: 'Ing. Jean-Pierre Muhindo', role: 'Ingénieur Topographe',             bio: "Expert en topographie de précision et systèmes d'information géographique (SIG) avec 10 ans d'expérience terrain.", order_index: 3 },
-      { name: 'Ing. Esperance Nzigire',   role: 'Ingénieure en Énergie',            bio: "Spécialiste en énergies renouvelables et électrification rurale, engagée dans le développement énergétique de la région.", order_index: 4 },
+      {
+        name: 'Ir. Akeem Kanani Blaise',
+        role: 'Gérant',
+        bio: "Fondateur et Gérant de BK Engineering Group. Ingénieur multidisciplinaire avec plus de 15 ans d'expérience dans le génie civil, l'architecture et la gestion de projets d'infrastructure en RDC.",
+        photo: '/images/equipes/equipe-akeem.jpeg',
+        order_index: 1,
+      },
+      {
+        name: 'Ir. Dallas',
+        role: 'Directeur Technique',
+        bio: "Directeur Technique de BK Engineering Group. Responsable de la supervision technique de tous les projets, il garantit la conformité aux normes d'ingénierie et la qualité des réalisations.",
+        photo: '/images/equipes/equipe-dallas.jpeg',
+        order_index: 2,
+      },
+      {
+        name: 'Ir. Joachim',
+        role: 'Directeur Technique',
+        bio: "Directeur Technique de BK Engineering Group. Expert en conception et en planification, il pilote les études techniques et assure l'excellence opérationnelle sur les chantiers.",
+        photo: '/images/equipes/equipe-joachim.jpeg',
+        order_index: 3,
+      },
     ];
 
     for (const m of team) {
       await pool.query(
-        `INSERT INTO team_members (name, role, bio, order_index)
-         VALUES ($1, $2, $3, $4)
-         ON CONFLICT DO NOTHING`,
-        [m.name, m.role, m.bio, m.order_index]
+        `INSERT INTO team_members (name, role, bio, photo, order_index)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [m.name, m.role, m.bio, m.photo, m.order_index]
       );
     }
 
-    // Projects
+    // ─── Projets ──────────────────────────────────────────────────────────────
+    // Supprime les anciens projets pour repartir propre
+    await pool.query(`DELETE FROM projects`);
+
     const projects = [
-      { title: "Construction du Centre de Santé de Rutshuru", description: "Construction complète d'un centre de santé de 500m² incluant salles de consultation, maternité et laboratoire. Projet réalisé en partenariat avec une ONG internationale.", category: 'Génie Civil',     location: 'Rutshuru, Nord-Kivu',     year: 2023, client: 'Ministère de la Santé',        status: 'completed' },
-      { title: "Système d'Irrigation Agricole de Masisi",     description: "Conception et installation d'un réseau d'irrigation couvrant 200 hectares de terres agricoles, bénéficiant à plus de 300 familles d'agriculteurs.",                          category: 'Irrigation',       location: 'Masisi, Nord-Kivu',        year: 2023, client: 'Coopérative Agricole COPAKI', status: 'completed' },
-      { title: "Réhabilitation du Pont de Kanyabayonga",      description: "Réhabilitation structurelle d'un pont de 45 mètres de portée, renforcement des fondations et remplacement du tablier pour une capacité de charge accrue.",                    category: 'Travaux Publics',  location: 'Kanyabayonga, Nord-Kivu', year: 2022, client: 'Office des Routes',           status: 'completed' },
-      { title: "Complexe Résidentiel Nyiragongo",             description: "Conception architecturale et supervision de la construction d'un complexe de 24 appartements modernes avec espaces verts et parking souterrain.",                             category: 'Architecture',     location: 'Goma, Nord-Kivu',         year: 2024, client: 'Promoteur Privé',            status: 'ongoing'   },
-      { title: "Levé Topographique du Parc Industriel",       description: "Relevé topographique de précision sur 50 hectares pour l'implantation d'un parc industriel, incluant modélisation 3D du terrain et étude géotechnique.",                      category: 'Topographie',      location: 'Goma, Nord-Kivu',         year: 2023, client: 'Zone Économique Spéciale',   status: 'completed' },
-      { title: "École Technique de Butembo",                  description: "Construction d'une école technique de 12 salles de classe avec ateliers pratiques, laboratoires informatiques et bibliothèque pour 600 élèves.",                              category: 'Génie Civil',      location: 'Butembo, Nord-Kivu',      year: 2022, client: 'Diocese de Butembo',         status: 'completed' },
+      {
+        title: 'Construction Centre de Santé de Référence',
+        description: "Construction complète d'un centre de santé moderne incluant salles de consultation, bloc opératoire, maternité et pharmacie pour desservir plus de 5 000 habitants.",
+        category: 'Génie Civil',
+        location: 'Goma, Nord-Kivu',
+        year: 2023,
+        client: 'ONG Santé Plus',
+        featured_image: '/images/img1.jpeg',
+        status: 'completed',
+      },
+      {
+        title: "Réseau d'Irrigation Agricole Masisi",
+        description: "Conception et installation d'un réseau d'irrigation couvrant 120 hectares de terres agricoles pour améliorer la productivité et la sécurité alimentaire de la région.",
+        category: 'Irrigation',
+        location: 'Masisi, Nord-Kivu',
+        year: 2023,
+        client: 'Coopérative Agricole du Nord-Kivu',
+        featured_image: '/images/img2.jpeg',
+        status: 'completed',
+      },
+      {
+        title: 'Réhabilitation Pont Routier Stratégique',
+        description: "Réhabilitation structurelle d'un pont stratégique reliant deux zones rurales, renforçant les échanges commerciaux et l'accès aux services de base pour 12 000 personnes.",
+        category: 'Travaux Publics',
+        location: 'Kanyabayonga, Nord-Kivu',
+        year: 2022,
+        client: 'Gouvernement Provincial',
+        featured_image: '/images/img3.jpeg',
+        status: 'completed',
+      },
+      {
+        title: 'Complexe Résidentiel Moderne',
+        description: "Conception architecturale et supervision de la construction d'un complexe résidentiel de 24 logements avec espaces verts, parking souterrain et équipements communautaires.",
+        category: 'Architecture',
+        location: 'Goma, Nord-Kivu',
+        year: 2023,
+        client: 'Promoteur Immobilier KIBALI',
+        featured_image: '/images/img4.jpeg',
+        status: 'completed',
+      },
+      {
+        title: 'Levé Topographique Zone Minière',
+        description: "Relevés topographiques de haute précision sur une superficie de 450 hectares à l'aide de drones et GPS différentiel pour le compte d'une société minière internationale.",
+        category: 'Topographie',
+        location: 'Walikale, Nord-Kivu',
+        year: 2024,
+        client: 'Mining Resources DRC',
+        featured_image: '/images/img7.jpeg',
+        status: 'ongoing',
+      },
     ];
 
     for (const p of projects) {
       await pool.query(
-        `INSERT INTO projects (title, description, category, location, year, client, status)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)
-         ON CONFLICT DO NOTHING`,
-        [p.title, p.description, p.category, p.location, p.year, p.client, p.status]
+        `INSERT INTO projects (title, description, category, location, year, client, featured_image, status)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [p.title, p.description, p.category, p.location, p.year, p.client, p.featured_image, p.status]
       );
     }
 
-    // Blog posts
+    // ─── Blog ─────────────────────────────────────────────────────────────────
+    await pool.query(`DELETE FROM blog_posts`);
+
     const posts = [
       {
-        title: "L'Ingénierie Durable au Cœur du Développement de Goma",
-        slug: 'ingenierie-durable-goma',
-        content: `<p>La ville de Goma, nichée au bord du lac Kivu et aux pieds du volcan Nyiragongo, fait face à des défis uniques en matière de développement urbain.</p><h2>Les Défis Spécifiques de Goma</h2><p>La proximité du volcan Nyiragongo impose des contraintes géotechniques particulières. Les sols volcaniques, bien que fertiles, présentent des caractéristiques mécaniques qui nécessitent une expertise spécialisée pour toute construction.</p><h2>Notre Approche Durable</h2><p>L'ingénierie durable signifie concevoir des infrastructures qui résistent au temps, minimisent l'impact environnemental et servent les communautés locales sur le long terme.</p>`,
-        excerpt: "Découvrez comment BK Engineering Group intègre les principes de durabilité dans ses projets à Goma, en tenant compte des défis géologiques uniques de la région.",
+        title: "L'Ingénierie Durable au Cœur du Développement Congolais",
+        slug: 'ingenierie-durable-developpement-congolais',
+        excerpt: "Comment BK Engineering Group intègre les principes du développement durable dans chaque projet pour construire un Congo résilient et prospère.",
+        content: "<p>BK Engineering Group place la durabilité au centre de chaque projet. Nos solutions techniques s'adaptent aux réalités locales tout en respectant les standards internationaux.</p><h2>Notre Approche</h2><p>Chaque projet commence par une analyse approfondie des besoins locaux, des contraintes environnementales et des ressources disponibles. Cette approche nous permet de livrer des infrastructures qui durent et servent les communautés sur le long terme.</p>",
         category: 'Ingénierie',
-        author: 'Ing. Bahati Kasereka',
+        thumbnail: '/images/img5.jpeg',
+        author: 'Ir. Akeem Kanani Blaise',
       },
       {
-        title: "Formation Technique : Investir dans la Jeunesse Congolaise",
+        title: 'Formation Technique : Investir dans la Jeunesse Congolaise',
         slug: 'formation-technique-jeunesse-congolaise',
-        content: `<p>L'avenir du développement de la République Démocratique du Congo repose sur la formation d'une nouvelle génération d'ingénieurs et de techniciens qualifiés.</p><h2>Notre Programme de Formation</h2><p>Nous accueillons chaque année des stagiaires et jeunes diplômés dans nos équipes, leur offrant une expérience pratique sur des projets réels.</p><h2>Impact Mesurable</h2><p>En cinq ans d'activité, nous avons formé plus de 50 jeunes ingénieurs et techniciens, dont 80% ont trouvé un emploi dans le secteur de la construction en RDC.</p>`,
-        excerpt: "BK Engineering Group investit dans la formation de la prochaine génération d'ingénieurs congolais à travers des programmes pratiques et du mentorat technique.",
+        excerpt: "Notre programme de formation technique a permis à plus de 50 jeunes ingénieurs de démarrer leur carrière.",
+        content: "<p>L'avenir du développement de la RDC repose sur la formation d'une nouvelle génération d'ingénieurs qualifiés. BK Engineering Group s'engage dans cette mission depuis sa création.</p><h2>Impact</h2><p>En cinq ans, nous avons formé plus de 50 jeunes professionnels, dont 80% travaillent aujourd'hui dans le secteur du génie civil en RDC.</p>",
         category: 'Formation',
-        author: 'Arch. Marie Zawadi',
+        thumbnail: '/images/img6.jpeg',
+        author: 'Ir. Dallas',
       },
       {
-        title: "Innovations en Topographie : Le Drone au Service du Génie Civil",
-        slug: 'innovations-topographie-drone-genie-civil',
-        content: `<p>La révolution numérique transforme le secteur du génie civil, et la topographie n'échappe pas à cette transformation.</p><h2>Avantages des Relevés par Drone</h2><p>Les drones équipés de caméras haute résolution et de capteurs LiDAR permettent de réaliser des relevés topographiques en une fraction du temps nécessaire avec les méthodes traditionnelles.</p><h2>Applications Pratiques</h2><p>Chez BK Engineering Group, nous utilisons cette technologie pour les études de faisabilité, le suivi de chantier et la création de modèles numériques de terrain.</p>`,
-        excerpt: "Comment BK Engineering Group utilise les drones et les technologies de pointe pour révolutionner les relevés topographiques en Nord-Kivu.",
+        title: 'Topographie par Drone : La Révolution des Relevés de Terrain',
+        slug: 'topographie-drone-revolution-relevas-terrain',
+        excerpt: "L'intégration des drones dans nos opérations topographiques a transformé notre capacité à cartographier des zones difficiles d'accès.",
+        content: "<p>Les drones équipés de caméras haute résolution et de capteurs LiDAR révolutionnent la topographie moderne. Chez BK Engineering Group, nous avons intégré cette technologie dans nos opérations quotidiennes.</p><h2>Avantages</h2><p>Précision centimétrique, réduction des délais de 70%, accès aux zones difficiles — les drones transforment notre façon de travailler.</p>",
         category: 'Technologie',
-        author: 'Ing. Jean-Pierre Muhindo',
+        thumbnail: '/images/img7.jpeg',
+        author: 'Ir. Joachim',
+      },
+      {
+        title: 'Irrigation et Sécurité Alimentaire en Nord-Kivu',
+        slug: 'irrigation-securite-alimentaire-nord-kivu',
+        excerpt: "Les projets d'irrigation que nous réalisons contribuent directement à améliorer la sécurité alimentaire de milliers de familles.",
+        content: "<p>Le Nord-Kivu dispose d'un potentiel agricole immense. Nos systèmes d'irrigation modernes permettent aux agriculteurs de cultiver toute l'année, indépendamment des saisons.</p>",
+        category: 'Ingénierie',
+        thumbnail: '/images/img8.jpeg',
+        author: 'Ir. Akeem Kanani Blaise',
+      },
+      {
+        title: "Réhabilitation d'Infrastructures : Enjeux et Méthodes",
+        slug: 'rehabilitation-infrastructures-enjeux-methodes',
+        excerpt: "La réhabilitation des bâtiments et infrastructures existants représente un défi technique majeur.",
+        content: "<p>Réhabiliter une infrastructure existante est souvent plus complexe que construire du neuf. Notre équipe maîtrise les techniques d'évaluation structurelle et de renforcement adaptées au contexte congolais.</p>",
+        category: 'Architecture',
+        thumbnail: '/images/img9.jpeg',
+        author: 'Ir. Dallas',
+      },
+      {
+        title: 'Normes de Construction en RDC : État des Lieux',
+        slug: 'normes-construction-rdc-etat-lieux',
+        excerpt: "Un regard sur les normes de construction en vigueur en RDC et les efforts pour aligner nos pratiques sur les standards internationaux.",
+        content: "<p>La RDC dispose d'un cadre réglementaire en matière de construction qui évolue progressivement. BK Engineering Group s'engage à respecter et promouvoir les meilleures pratiques du secteur.</p>",
+        category: 'Actualités',
+        thumbnail: '/images/img10.jpeg',
+        author: 'Ir. Joachim',
       },
     ];
 
     for (const post of posts) {
       await pool.query(
-        `INSERT INTO blog_posts (title, slug, content, excerpt, category, author, published, published_at)
-         VALUES ($1, $2, $3, $4, $5, $6, TRUE, NOW())
+        `INSERT INTO blog_posts (title, slug, content, excerpt, category, thumbnail, author, published, published_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, TRUE, NOW())
          ON CONFLICT (slug) DO NOTHING`,
-        [post.title, post.slug, post.content, post.excerpt, post.category, post.author]
+        [post.title, post.slug, post.content, post.excerpt, post.category, post.thumbnail, post.author]
       );
     }
 
