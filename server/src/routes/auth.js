@@ -91,8 +91,8 @@ router.post(
         user: { id: user.id, name: user.name, email: user.email, role: user.role },
       });
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Server error' });
+      console.error('LOGIN ERROR:', err.message);
+      res.status(500).json({ error: 'Server error', detail: err.message });
     }
   }
 );
